@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import dbConnect from "@/lib/dbConnect";
-import User from "@/models/User";
+import { prisma } from "./lib/prisma";
+import getRandomColorKey from "./utils/createRandomColor";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -13,18 +13,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
   callbacks: {
     async signIn({ user }) {
-      await dbConnect();
-
-      const existingUser = await User.findOne({ email: user.email });
-
-      if (!existingUser) {
-        await User.create({
-          username: user.name,
-          email: user.email,
+      try {
+        const existingPlayer = await prisma.player.findUnique({
+          where: { email: user.email! },
         });
-      }
 
-      return true;
+        if (!existingPlayer) {
+          await prisma.player.create({
+            data: {
+              email: user.email!,
+              username: user.name || "Unknown",
+              isOnline: true,
+              inGame: false,
+              color: getRandomColorKey(),
+            },
+          });
+        } else {
+          await prisma.player.update({
+            where: { email: user.email! },
+            data: { isOnline: true },
+          });
+        }
+
+        return true;
+      } catch (err) {
+        console.error("Sign-in error:", err);
+        return false;
+      }
     },
   },
 });
