@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import Header from "@/components/Header";
 import { Player } from "@prisma/client";
@@ -12,11 +12,21 @@ interface MainProps {
 }
 
 const Main = ({ player }: MainProps) => {
-  const setPlayer = usePlayerStore((state) => state.setPlayer);
+  const [status, setStatus] = useState<"loading" | "found" | "notfound">("loading");
 
+  const setPlayer = usePlayerStore((state) => state.setPlayer);
   useEffect(() => {
-    setPlayer(player.email, player.username, player.color);
+    if (player.email && player.username && player.color) {
+      setPlayer(player.email, player.username, player.color);
+      setStatus("found");
+    } else {
+      setStatus("notfound");
+      console.log("Player data incomplete:", player);
+    }
   }, [player, setPlayer]);
+
+  if(status === "loading") return <div>loading...</div>
+  if(status === "notfound") return <div>Error</div>
 
   return (
     <section className="flex flex-col h-screen w-full">

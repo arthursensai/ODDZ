@@ -32,7 +32,10 @@ export async function POST(request: Request) {
       await prisma.player.update({
         where: { email },
         data: {
-          inGame: true
+          inGame: true,
+          games: {
+            connect: { id: room.id}
+          }
         }
       })
 

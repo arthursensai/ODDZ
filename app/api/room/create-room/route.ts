@@ -23,6 +23,11 @@ export async function POST(request: Request) {
         data: {
           roomID: roomID,
           name: roomName,
+          admin: {
+            connect: {
+              id: userID
+            }
+          },
           players: {
             connect: {
               id: userID,

@@ -18,9 +18,10 @@ import { useRouter } from "next/navigation";
 
 const CreateRoom = () => {
   const router = useRouter();
-
   const setGame = useGameStore((state) => state.setGame);
   const email = usePlayerStore((state) => state.email);
+  const setAdmin = usePlayerStore((state) => state.setAdmin);
+
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
@@ -39,8 +40,8 @@ const CreateRoom = () => {
         email,
       });
 
-      setGame(room.data.roomID, room.data.name, room.data.id);
-      console.log(room.data);
+      setGame(room.data.roomID, room.data.name, room.data.id, room.data.status);
+      setAdmin(true);
       setStatus("success");
       router.push(`/rooms/${room.data.roomID}`);
     } catch (err) {

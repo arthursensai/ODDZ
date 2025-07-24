@@ -34,15 +34,15 @@ const JoinRoom = () => {
     setStatus("loading");
 
     try {
-      const room = await axios.post("/api/room/create-room", {
+      const room = await axios.post("/api/room/join-room", {
         roomID,
         email,
       });
 
-      setGame(room.data.roomID, room.data.name, room.data.id);
+      setGame(room.data.roomID, room.data.name, room.data.id, room.data.status);
       console.log(room.data);
       setStatus("success");
-      router.push("/rooms");
+      router.push(`/rooms/${roomID}`);
     } catch (err) {
       setStatus("error");
       console.log(err);

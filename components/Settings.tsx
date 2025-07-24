@@ -18,6 +18,7 @@ import { useState, FormEvent } from "react";
 import axios from "axios";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { Color } from "@prisma/client";
+import SignOut from "./SignOut";
 
 const Settings = () => {
   const setPlayer = usePlayerStore((state) => state.setPlayer);
@@ -100,6 +101,7 @@ const Settings = () => {
                 </div>
               </RadioGroup>
             </div>
+            <SignOut />
           </div>
           <DialogFooter className="mt-4">
             <DialogClose asChild>

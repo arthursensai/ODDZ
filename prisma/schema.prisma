@@ -17,6 +17,7 @@ model Player {
   color Color
   games    Game[]   @relation("PlayerGames")
   wins     Game[]   @relation("GameWinner")
+  adminOf  Game[]     @relation("GameAdmin")
 }
 
 model Game {
@@ -28,6 +29,8 @@ model Game {
   players   Player[]    @relation("PlayerGames")
   winnerId  Int?        // reference to Player.id
   winner    Player?     @relation("GameWinner", fields: [winnerId], references: [id])
+  adminID   Int
+  admin Player @relation("GameAdmin", fields: [adminID], references: [id])
 }
 
 enum GameStatus {

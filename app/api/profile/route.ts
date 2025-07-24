@@ -1,5 +1,29 @@
 import { prisma } from "@/lib/prisma";
 
+export async function GET(request: Request){
+  try {
+    const data = await request.json();
+
+    const { email } = data;
+
+    if(!email) return Response.json({ error: "No valid Credentiels"}, { status: 400 });
+
+    const player = await prisma.player.findUnique({
+      where: {
+        email
+      }
+    })
+
+    if(!player) return Response.json({ error: "No valid Credentiels"}, { status: 400 });
+
+    return Response.json(player, { status: 200 });
+
+  } catch (reason){
+    const message = reason instanceof Error ? reason.message : "Unexpected error";
+    return new Response(message, { status: 500 });
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const data = await request.json();
