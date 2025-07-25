@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const SmileyLoader = () => {
+const SmileyLoader = ({ text }: { text: string }) => {
   const [mood, setMood] = useState<"happy" | "worried">("happy");
   const [animationTime, setAnimationTime] = useState(0);
 
@@ -28,7 +28,7 @@ const SmileyLoader = () => {
   const eyeY = isWorried ? 2 : 0;
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen gap-10 bg-gradient-to-br from-slate-800 to-slate-900">
+    <div className="flex flex-col items-center justify-center h-screen gap-10 ">
       {/* Enhanced glow layers */}
       <div className="relative">
         {/* Outer glow */}
@@ -166,7 +166,7 @@ const SmileyLoader = () => {
             textShadow: '0 2px 8px rgba(6, 182, 212, 0.3)',
           }}
         >
-          {isWorried ? "Preparing your game..." : "Waiting for other players..."}
+          {text}
         </p>
         
         {/* Refined loading dots */}

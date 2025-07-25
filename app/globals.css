@@ -112,11 +112,20 @@
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+@keyframes bgWave {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.bg-wave {
+  animation: bgWave 10s ease-in-out infinite;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground bg-[url('/bg.png')] bg-cover text-white;
+    @apply bg-background bg-[url('/bg.webp')] bg-cover text-white ;
   }
 }

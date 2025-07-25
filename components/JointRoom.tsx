@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -13,8 +14,21 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 import { useGameStore } from "@/store/useRoomStore";
 import { usePlayerStore } from "@/store/usePlayerStore";
-import { useState, FormEvent } from "react";
+import { useState } from "react";
 import axios from "axios";
+import { motion } from "framer-motion";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+const roomIDSchema = z.object({
+  roomId: z
+    .string()
+    .min(6, "Room ID is required")
+    .max(6, "Room ID must be 6 characters"),
+});
+
+type FormData = z.infer<typeof roomIDSchema>;
 
 const JoinRoom = () => {
   const router = useRouter();
@@ -25,52 +39,85 @@ const JoinRoom = () => {
     "idle" | "loading" | "success" | "error"
   >("idle");
 
-  const handleCreating = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    resolver: zodResolver(roomIDSchema),
+  });
 
-    const formData = new FormData(event.currentTarget);
-    const roomID = formData.get("id");
-
+  const handleJoining = async (data: FormData) => {
     setStatus("loading");
 
     try {
       const room = await axios.post("/api/room/join-room", {
-        roomID,
+        roomID: data.roomId,
         email,
       });
 
       setGame(room.data.roomID, room.data.name, room.data.id, room.data.status);
       setStatus("success");
-      router.push(`/rooms/${roomID}`);
+      router.push(`/rooms/${data.roomId}`);
     } catch (err) {
       setStatus("error");
       console.log(err);
     }
   };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-[#00c2ff] hover:bg-[#00c2ff] hover:cursor-pointer hover:scale-110 text-3xl px-4 py-8 ">
-          Join a room
-        </Button>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          <Button className="bg-[#3b82f6] hover:bg-[#00b0e5] text-white px-6 py-4 rounded-xl shadow-md transition-all duration-300 text-xl h-max hover:cursor-pointer">
+            Join a room
+          </Button>
+        </motion.div>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-[425px] text-black">
-        <form onSubmit={handleCreating}>
+        <form onSubmit={handleSubmit(handleJoining)}>
           <DialogHeader>
-            <DialogTitle className="mb-4">Join Room</DialogTitle>
+            <DialogTitle>Join Room</DialogTitle>
           </DialogHeader>
+          <DialogDescription className="my-4">
+            Join your friends room
+          </DialogDescription>
           <div className="grid gap-3">
-            <Label htmlFor="id">room ID:</Label>
-            <Input id="id" name="id" />
+            <Label htmlFor="roomId">Room ID:</Label>
+            <Input
+              id="roomId"
+              placeholder="12ks79"
+              {...register("roomId")}
+            />
           </div>
+          {errors.roomId && (
+            <p className="text-red-500 text-sm mt-1">{errors.roomId.message}</p>
+          )}
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline" className="hover:cursor-pointer">
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit">
+            <Button
+              disabled={status === "loading"}
+              type="submit"
+              className={`hover:cursor-pointer ${
+                status === "loading"
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+            >
               {status === "loading"
-                ? "Joining..."
+                ? "Searching..."
                 : status === "success"
                 ? "Redirecting!"
                 : "Join"}

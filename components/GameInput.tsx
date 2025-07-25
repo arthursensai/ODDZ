@@ -15,7 +15,7 @@ import { usePlayerStore } from "@/store/usePlayerStore";
 import { useGameStore } from "@/store/useRoomStore";
 import { useState } from "react";
 
-const GameInput = () => {
+const GameInput = ({ isDisabled }: { isDisabled: boolean }) => {
   const [status, setStatus] = useState<"loading" | "done" | "error" | "gameON">(
     "loading"
   );
@@ -40,7 +40,7 @@ const GameInput = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="disabled:opacity-75 hover:cursor-pointer" onClick={startGame}>
+        <Button className="disabled:opacity-75 hover:cursor-pointer" onClick={startGame} disabled={isDisabled} >
           Start the Game
         </Button>
       </DialogTrigger>

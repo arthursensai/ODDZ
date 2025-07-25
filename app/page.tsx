@@ -1,17 +1,15 @@
 import { auth } from "@/auth";
-import SignIn from "../components/SignIn";
 import Main from "../pages/Main";
 import getPlayerData from "@/utils/getPlayerData";
+import LandingAnimation from "@/components/LandingAnimation";
 
 const Home = async () => {
   const session = await auth();
 
-  // If no session, show login prompt
   if (!session?.user?.email) {
     return (
-      <section className="flex flex-col w-full min-h-screen justify-center items-center text-white">
-        <p className="text-3xl font-bold mb-4">Click the button below to login first</p>
-        <SignIn />
+      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6  text-white">
+         <LandingAnimation />
       </section>
     );
   }
