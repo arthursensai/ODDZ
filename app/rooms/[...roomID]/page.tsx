@@ -10,6 +10,8 @@ import { useParams } from "next/navigation";
 import SmileyLoader from "@/components/SmileyLoader";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import colorMap from "@/types/color";
+import GameInput from "@/components/GameInput";
+import GameDialog from "@/components/GameDialog";
 
 const Page = () => {
   const [status, setStatus] = useState<"loading" | "notfound" | "found">(
@@ -22,8 +24,10 @@ const Page = () => {
   const playerEmail = usePlayerStore((state) => state.email);
   const router = useRouter();
   const setGame = useGameStore((state) => state.setGame);
+  const setQuestion = useGameStore((state) => state.setQuestion);
   const gamePlayers = useGameStore((state) => state.players);
   const isAdmin = usePlayerStore((state) => state.isAdmin);
+  const [gameStatus, setGameStatus] = useState<"gameOFF" | "gameON">("gameOFF");
 
   if (!roomID) router.replace("/");
 
@@ -31,7 +35,7 @@ const Page = () => {
     const socket = getSocket();
 
     socket.on("connect", () => {
-      console.log("Connected to the socket");
+      
     });
 
     socket.emit("joinRoom", { roomID, playerEmail });
@@ -41,22 +45,30 @@ const Page = () => {
       setGame(data.roomID, data.name, data.players, data.status);
     });
 
-    socket.on("error", () => {
+    socket.on("question", (questionText: string) => {
+      setQuestion(questionText);
+    });
+
+    socket.on("joinRoomError", () => {
       setStatus("notfound");
+    });
+
+    socket.on("gameStarted", () => {
+      setGameStatus("gameON");
     });
 
     return () => {
       socket.off("connect");
       socket.off("welcome");
     };
-  }, [roomID, router, playerEmail, setGame]);
+  }, [roomID, router, playerEmail, setGame, setQuestion]);
 
   if (status === "loading") return <SmileyLoader />;
   if (status === "notfound") {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         <h1 className="text-4xl">Room Not Found</h1>
-        <button onClick={() => router.replace("/")}>Go Home</button>
+        <Button onClick={() => router.replace("/")}>Go Home</Button>
       </div>
     );
   }
@@ -68,9 +80,7 @@ const Page = () => {
           <div className="flex flex-col w-full">
             <div className="flex  items-center justify-between p-4">
               <h2 className="text-3xl">Players</h2>
-              {
-                isAdmin ? <Button>Start the round</Button> : ""
-              }
+              {isAdmin ? <GameInput /> : ""}
             </div>
 
             <div className="grid grid-cols-2 grid-rows-2 gap-12 p-12">
@@ -97,6 +107,7 @@ const Page = () => {
             <h2>Settings</h2>
           </div>
         </div>
+        {isAdmin === false && <GameDialog gameStatus={gameStatus} />}
       </section>
     );
 };

@@ -4,7 +4,7 @@ import { Player } from "@prisma/client";
 const getPlayerData = async(email: string):Promise<Player | null> => {
 
     const player = await prisma.player.findUnique({
-          where: { email: email },
+          where: { email },
     });
 
     if(player) return player;

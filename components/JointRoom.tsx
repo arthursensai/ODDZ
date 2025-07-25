@@ -40,7 +40,6 @@ const JoinRoom = () => {
       });
 
       setGame(room.data.roomID, room.data.name, room.data.id, room.data.status);
-      console.log(room.data);
       setStatus("success");
       router.push(`/rooms/${roomID}`);
     } catch (err) {

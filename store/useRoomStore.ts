@@ -9,8 +9,12 @@ interface GameState {
   status: GameStatus;
   players: PlayerInfo[];
   winner: string | null;
+  question: string | null;
   setGame: (roomID: string, name: string, players: PlayerInfo[], status: GameStatus) => void;
   addPlayer: (player: PlayerInfo) => void;
+  setStatus: (status: GameStatus) => void;
+  setQuestion: (question: string) => void;
+  startGame: (question: string) => void;
   finishGame: () => void;
 }
 
@@ -21,7 +25,9 @@ export const useGameStore = create<GameState>()(
       name: "",
       status: "WAITING",
       winner: null,
+      question: null,
       players: [],
+
       setGame: (roomID, name, players, status) =>
         set(() => ({
           roomID,
@@ -29,6 +35,7 @@ export const useGameStore = create<GameState>()(
           status,
           players,
         })),
+
       addPlayer: (player) =>
         set((state) => {
           if (state.players.find((p) => p.id === player.id)) return {};
@@ -36,6 +43,17 @@ export const useGameStore = create<GameState>()(
             players: [...state.players, player],
           };
         }),
+
+      setStatus: (status) => set(() => ({ status })),
+
+      setQuestion: (question) => set(() => ({ question })),
+
+      startGame: (question: string) =>
+        set(() => ({
+          status: "IN_PROGRESS",
+          question,
+        })),
+
       finishGame: () =>
         set(() => ({
           roomID: "",
@@ -43,6 +61,7 @@ export const useGameStore = create<GameState>()(
           status: "FINISHED",
           players: [],
           winner: null,
+          question: null,
         })),
     }),
     {
