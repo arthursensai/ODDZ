@@ -1,10 +1,10 @@
-import color from "../types/color";
+import { Color } from "@prisma/client"
 
 interface IUser {
     _id: string,
     username: string,
     email: string,
-    color: color,
+    color: Color,
     inRoom: boolean,
     isOnline: boolean
 }
