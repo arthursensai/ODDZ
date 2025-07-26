@@ -39,6 +39,7 @@ const Page = () => {
   }, [roomID, router]);
 
   const handleGameData = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (data: any) => {
       setStatus("found");
       setGame(data.roomID, data.name, data.players, data.status);
