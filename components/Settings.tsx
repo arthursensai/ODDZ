@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
-import { CircleUserRound } from "lucide-react";
+import { CircleUserRound, Check } from "lucide-react";
 import colorMap from "@/types/color";
 import { useState, FormEvent } from "react";
 import axios from "axios";
@@ -20,7 +20,7 @@ import { usePlayerStore } from "@/store/usePlayerStore";
 import { Color } from "@prisma/client";
 import SignOut from "./SignOut";
 import { motion } from "framer-motion";
-import { Check } from "lucide-react";
+import PlayMusicButton from "@/components/PlayMusicBtn";
 
 const Settings = () => {
   const setPlayer = usePlayerStore((state) => state.setPlayer);
@@ -121,6 +121,10 @@ const Settings = () => {
                 </div>
               </RadioGroup>
             </div>
+          </div>
+          <div className="flex items-center justify-between mt-6 px-1">
+            <Label>Background Music :</Label>
+            <PlayMusicButton />
           </div>
           <DialogFooter className="mt-4">
             <div className="flex w-full">

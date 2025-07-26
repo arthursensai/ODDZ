@@ -13,6 +13,7 @@ import GameInput from "@/components/GameInput";
 import GameDialog from "@/components/GameDialog";
 import CopyButton from "@/components/CopyBtn";
 import NotFound from "@/app/not-found";
+import LeaveButton from "@/components/LeaveBtn";
 
 type Status = "loading" | "notfound" | "found";
 type GameStatus = "gameOFF" | "gameON";
@@ -37,14 +38,20 @@ const Page = () => {
     }
   }, [roomID, router]);
 
-  const handleGameData = useCallback((data: any) => {
-    setStatus("found");
-    setGame(data.roomID, data.name, data.players, data.status);
-  }, [setGame]);
+  const handleGameData = useCallback(
+    (data: any) => {
+      setStatus("found");
+      setGame(data.roomID, data.name, data.players, data.status);
+    },
+    [setGame]
+  );
 
-  const handleQuestion = useCallback((questionText: string) => {
-    setQuestion(questionText);
-  }, [setQuestion]);
+  const handleQuestion = useCallback(
+    (questionText: string) => {
+      setQuestion(questionText);
+    },
+    [setQuestion]
+  );
 
   const handleJoinRoomError = useCallback(() => {
     setStatus("notfound");
@@ -77,7 +84,14 @@ const Page = () => {
       socket.off("joinRoomError", handleJoinRoomError);
       socket.off("gameStarted", handleGameStarted);
     };
-  }, [roomID, playerEmail, handleGameData, handleQuestion, handleJoinRoomError, handleGameStarted]);
+  }, [
+    roomID,
+    playerEmail,
+    handleGameData,
+    handleQuestion,
+    handleJoinRoomError,
+    handleGameStarted,
+  ]);
 
   if (status === "loading") {
     return <SmileyLoader text="Finding Your Room..." />;
@@ -94,9 +108,7 @@ const Page = () => {
           {/* Header */}
           <div className="flex items-center justify-between p-4">
             <h2 className="text-3xl font-bold">Players</h2>
-            {isAdmin && (
-              <GameInput isDisabled={gamePlayers.length !== 4} />
-            )}
+            {isAdmin && <GameInput isDisabled={gamePlayers.length !== 4} />}
           </div>
 
           {/* Players Grid */}
@@ -109,10 +121,12 @@ const Page = () => {
                 style={{ backgroundColor: colorMap[playerData.color] }}
               >
                 <CircleUserRound className="w-14 h-14 rounded-3xl transition-transform duration-400 hover:scale-110" />
-                <h1 className="text-2xl font-semibold">{playerData.username}</h1>
+                <h1 className="text-2xl font-semibold">
+                  {playerData.username}
+                </h1>
               </div>
             ))}
-            
+
             {/* Render empty slots */}
             {Array.from({ length: 4 - gamePlayers.length }).map((_, i) => (
               <div
@@ -120,8 +134,31 @@ const Page = () => {
                 className="bg-gray-200 flex items-center justify-center p-4 rounded-2xl border-4 border-dashed border-gray-400 text-gray-500"
               >
                 <div className="text-center">
-                  <CircleUserRound className="w-14 h-14 mx-auto mb-2 opacity-50" />
-                  <p className="text-lg">Waiting for player...</p>
+                  <CircleUserRound className="w-14 h-14 mx-auto mb-2 animate-pulse" />
+                  <p className="text-lg">
+                    Waiting for player
+                    <span className="inline-flex ml-1">
+                      <span className="animate-pulse animation-delay-0">.</span>
+                      <span className="animate-pulse animation-delay-200">
+                        .
+                      </span>
+                      <span className="animate-pulse animation-delay-400">
+                        .
+                      </span>
+                    </span>
+                  </p>
+
+                  <style jsx>{`
+                    .animation-delay-0 {
+                      animation-delay: 0ms;
+                    }
+                    .animation-delay-200 {
+                      animation-delay: 200ms;
+                    }
+                    .animation-delay-400 {
+                      animation-delay: 400ms;
+                    }
+                  `}</style>
                 </div>
               </div>
             ))}
@@ -138,31 +175,42 @@ const Page = () => {
             <CopyButton text={roomID} />
           </div>
         </div>
-        
+
         <div className="mb-4">
           <p className="text-lg">
             Players: <span className="font-semibold">{gamePlayers.length}</span>
             /<span className="font-semibold">4</span>
           </p>
         </div>
-        
+
         <div className="mb-4">
           <p className="text-lg">
-            Status: {" "}
-            <span className={`font-semibold ${gameStatus === "gameOFF" ? "text-yellow-600" : "text-green-600"}`}>
-              {gameStatus === "gameOFF" 
-                ? `Waiting for ${4 - gamePlayers.length} more player${4 - gamePlayers.length !== 1 ? 's' : ''}...` 
-                : "Game Starting!"
-              }
+            Status:{" "}
+            <span
+              className={`font-semibold ${
+                gameStatus === "gameOFF" ? "text-yellow-600" : "text-green-600"
+              }`}
+            >
+              {gameStatus === "gameOFF"
+                ? `Waiting for ${4 - gamePlayers.length} more player${
+                    4 - gamePlayers.length !== 1 ? "s" : ""
+                  }...`
+                : "Game Starting!"}
             </span>
           </p>
         </div>
 
+        {/* Leave Button */}
+        <div className="mt-auto w-full flex">
+          <LeaveButton />
+        </div>
+
         {/* Game rules or instructions could go here */}
-        <div className="mt-auto p-4 bg-gray-50 rounded-lg">
+        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
           <h3 className="font-semibold mb-2">Game Info</h3>
           <p className="text-sm text-gray-600">
-            Waiting for all players to join. The game will start automatically when 4 players are present.
+            Waiting for all players to join. The game will start when 4 players
+            are present.
           </p>
         </div>
       </div>

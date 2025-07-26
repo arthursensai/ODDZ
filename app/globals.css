@@ -126,6 +126,6 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background bg-[url('/bg.webp')] bg-cover text-white ;
+    @apply bg-background bg-[url('/images/bg.webp')] bg-cover text-white ;
   }
 }

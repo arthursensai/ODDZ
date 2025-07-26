@@ -8,7 +8,7 @@ const Home = async () => {
 
   if (!session?.user?.email) {
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center text-center px-6  text-white">
+      <section className="min-h-screen flex flex-col text-center text-white">
          <LandingAnimation />
       </section>
     );

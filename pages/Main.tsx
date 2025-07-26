@@ -8,6 +8,8 @@ import CreateRoom from "../components/CreateRoom";
 import JoinRoom from "@/components/JointRoom";
 import { motion } from "framer-motion";
 import SmileyLoader from "@/components/SmileyLoader";
+import BackgroundMusic from "@/components/BackgroundMusic";
+import HomeAnimation from "@/components/HomeAnimation";
 
 interface MainProps {
   player: Player;
@@ -19,6 +21,7 @@ const Main = ({ player }: MainProps) => {
   );
 
   const setPlayer = usePlayerStore((state) => state.setPlayer);
+  
   useEffect(() => {
     if (player.email && player.username && player.color) {
       setPlayer(player.email, player.username, player.color);
@@ -29,32 +32,60 @@ const Main = ({ player }: MainProps) => {
     }
   }, [player, setPlayer]);
 
-  if (status === "loading") return <SmileyLoader text="loading..."/>;
+  if (status === "loading") return <SmileyLoader text="loading..." />;
   if (status === "notfound") return <div>Error</div>;
 
   return (
-    <section className="flex flex-col h-screen w-full absolute inset-0 bg-black/35">
+    <section className="min-h-screen w-full relative bg-black/35">
+      <BackgroundMusic />
       <Header />
-      <div className="flex flex-col justify-center items-center h-full gap-4">
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-3xl md:text-5xl font-extrabold mb-6 text-center drop-shadow"
-        >
-          Ready to find the <span className="text-[#84cc16]">imposter </span>?
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="text-lg md:text-xl text-white/80 mb-4 text-center"
-        >
-          A game of logic, trust, and deception.
-        </motion.p>
-        <div className="flex gap-4">
-          <CreateRoom />
-          <JoinRoom />
+      
+      {/* Main content container */}
+      <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]">
+        {/* Animation section - smaller on desktop */}
+        <div className="lg:w-2/5 flex items-center justify-center p-4 lg:p-6">
+          <div className="w-full max-w-[300px] sm:max-w-[350px] lg:max-w-[400px]">
+            <HomeAnimation />
+          </div>
+        </div>
+        
+        {/* Content section - larger on desktop */}
+        <div className="flex-1 lg:w-3/5 flex flex-col justify-center items-center p-6 lg:p-8 lg:pr-16">
+          <div className="w-full max-w-2xl space-y-8">
+            {/* Title */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-center lg:text-left space-y-4"
+            >
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight drop-shadow-lg text-white">
+                Ready to find the{" "}
+                <span className="text-[#84cc16] drop-shadow-md">imposter</span>?
+              </h1>
+            </motion.div>
+
+            {/* Subtitle */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="text-xl sm:text-2xl lg:text-3xl text-white/80 text-center lg:text-left leading-relaxed"
+            >
+              A game of logic, trust, and deception.
+            </motion.p>
+
+            {/* Action buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+              className="flex flex-col sm:flex-row gap-6 pt-6 justify-center lg:justify-start"
+            >
+              <CreateRoom />
+              <JoinRoom />
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>
