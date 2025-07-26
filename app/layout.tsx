@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description:
     "A fast-paced social deduction game where players try to find the odd one out. Built with Next.js.",
   icons: {
-    icon: "/favicon.png"
+    icon: "/images/favicon.png"
   }
 };
 
