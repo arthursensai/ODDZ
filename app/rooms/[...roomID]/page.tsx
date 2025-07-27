@@ -48,8 +48,8 @@ const Page = () => {
   );
 
   const handleQuestion = useCallback(
-    (questionText: string) => {
-      setQuestion(questionText);
+    (question: any) => {
+      setQuestion(question.question);
     },
     [setQuestion]
   );

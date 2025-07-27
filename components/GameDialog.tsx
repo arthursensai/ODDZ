@@ -9,7 +9,6 @@ const GameDialog = ({ gameStatus }: { gameStatus: string }) => {
 
   useEffect(() => {
     if (gameStatus === "gameON") {
-      console.log(question)
       setOpen(true);
     }
   }, [gameStatus, question]);
