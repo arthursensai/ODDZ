@@ -29,7 +29,6 @@ const Settings = () => {
   const username = usePlayerStore((state) => state.username);
   const color = usePlayerStore((state) => state.color);
 
-  // Add state to track selected color
   const [selectedColor, setSelectedColor] = useState(color);
 
   const [status, setStatus] = useState<

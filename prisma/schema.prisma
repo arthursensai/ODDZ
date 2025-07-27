@@ -16,6 +16,7 @@ model Player {
   isOnline  Boolean
   inGame    Boolean
   color     Color
+  answers   Answer[]
   adminOf   Game[]   @relation("GameAdmin")
   wins      Game[]   @relation("GameWinner")
   games     Game[]   @relation("PlayerGames")
@@ -31,9 +32,20 @@ model Game {
   adminID          Int
   imposterQuestion String?
   normalQuestion   String?
+  answers          Answer[]
   admin            Player     @relation("GameAdmin", fields: [adminID], references: [id])
   winner           Player?    @relation("GameWinner", fields: [winnerId], references: [id])
   players          Player[]   @relation("PlayerGames")
+}
+
+model Answer {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  content   String
+  playerId  Int
+  gameId    String
+  game      Game     @relation(fields: [gameId], references: [id])
+  player    Player   @relation(fields: [playerId], references: [id])
 }
 
 enum GameStatus {
