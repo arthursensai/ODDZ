@@ -3,35 +3,37 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
 model Player {
-  id       Int      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  email    String   @unique
-  username String
-  isOnline Boolean
-  inGame Boolean
-  color Color
-  games    Game[]   @relation("PlayerGames")
-  wins     Game[]   @relation("GameWinner")
-  adminOf  Game[]     @relation("GameAdmin")
+  email     String   @unique
+  username  String
+  isOnline  Boolean
+  inGame    Boolean
+  color     Color
+  adminOf   Game[]   @relation("GameAdmin")
+  wins      Game[]   @relation("GameWinner")
+  games     Game[]   @relation("PlayerGames")
 }
 
 model Game {
-  id        String      @id @default(cuid())
-  createdAt DateTime    @default(now())
-  roomID    String @unique
-  name      String
-  status    GameStatus  @default(WAITING)
-  players   Player[]    @relation("PlayerGames")
-  winnerId  Int?        // reference to Player.id
-  winner    Player?     @relation("GameWinner", fields: [winnerId], references: [id])
-  adminID   Int
-  admin Player @relation("GameAdmin", fields: [adminID], references: [id])
+  id               String     @id @default(cuid())
+  createdAt        DateTime   @default(now())
+  status           GameStatus @default(WAITING)
+  winnerId         Int?
+  name             String
+  roomID           String     @unique
+  adminID          Int
+  imposterQuestion String?
+  normalQuestion   String?
+  admin            Player     @relation("GameAdmin", fields: [adminID], references: [id])
+  winner           Player?    @relation("GameWinner", fields: [winnerId], references: [id])
+  players          Player[]   @relation("PlayerGames")
 }
 
 enum GameStatus {
@@ -41,16 +43,16 @@ enum GameStatus {
 }
 
 enum Color {
-  BRIGHT_CYAN    // "#00c2ff"
-  GREEN          // "#00bf63"
-  ORANGE         // "#ff914d"
-  RED            // "#ff5757"
-  PURPLE         // "#6a0dad"
-  YELLOW         // "#f9d71c"
-  PINK           // "#ff6f91"
-  DODGER_BLUE    // "#1e90ff"
-  FOREST_GREEN   // "#228b22"
-  ORANGE_STD     // "#ffa500"
-  ORANGE_RED     // "#ff4500"
-  DARK_RED       // "#8b0000"
+  BRIGHT_CYAN
+  GREEN
+  ORANGE
+  RED
+  PURPLE
+  YELLOW
+  PINK
+  DODGER_BLUE
+  FOREST_GREEN
+  ORANGE_STD
+  ORANGE_RED
+  DARK_RED
 }

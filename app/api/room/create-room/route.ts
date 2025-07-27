@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { nanoid } from "nanoid";
+import getQuestions from "@/utils/getQuestions";
 
 export async function POST(request: Request) {
   const data = await request.json();
@@ -13,8 +14,13 @@ export async function POST(request: Request) {
       where: { email },
     });
 
-    if (!player || player.inGame)
+    const questions = await getQuestions();
+
+    if (!player)
       return Response.json({ error: "No valid player!" }, { status: 400 });
+
+    if (player.inGame)
+      return Response.json({ error: "player is in game!" }, { status: 400 });
 
     const userID = player.id;
 
@@ -23,10 +29,12 @@ export async function POST(request: Request) {
         data: {
           roomID: roomID,
           name: roomName,
+          normalQuestion: questions.normalQuestion,
+          imposterQuestion: questions.imposterQuestion,
           admin: {
             connect: {
-              id: userID
-            }
+              id: userID,
+            },
           },
           players: {
             connect: {
@@ -39,9 +47,9 @@ export async function POST(request: Request) {
       await prisma.player.update({
         where: { email },
         data: {
-          inGame: true
-        }
-      })
+          inGame: true,
+        },
+      });
 
       return Response.json(room, { status: 201 });
     } catch (err) {

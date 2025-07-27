@@ -9,11 +9,11 @@ import { useParams } from "next/navigation";
 import SmileyLoader from "@/components/SmileyLoader";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import colorMap from "@/types/color";
-import GameInput from "@/components/GameInput";
 import GameDialog from "@/components/GameDialog";
 import CopyButton from "@/components/CopyBtn";
 import NotFound from "@/app/not-found";
 import LeaveButton from "@/components/LeaveBtn";
+import StartGame from "@/components/StartGame";
 
 type Status = "loading" | "notfound" | "found";
 type GameStatus = "gameOFF" | "gameON";
@@ -109,7 +109,7 @@ const Page = () => {
           {/* Header */}
           <div className="flex items-center justify-between p-4">
             <h2 className="text-3xl font-bold">Players</h2>
-            {isAdmin && <GameInput isDisabled={gamePlayers.length !== 4} />}
+            {isAdmin && <StartGame />}
           </div>
 
           {/* Players Grid */}
@@ -215,9 +215,7 @@ const Page = () => {
           </p>
         </div>
       </div>
-
-      {/* Game dialog for non-admin players */}
-      {!isAdmin && <GameDialog gameStatus={gameStatus} />}
+      <GameDialog gameStatus={gameStatus} />
     </section>
   );
 };
