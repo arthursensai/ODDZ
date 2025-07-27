@@ -18,9 +18,17 @@ import StartGame from "@/components/StartGame";
 type Status = "loading" | "notfound" | "found";
 type GameStatus = "gameOFF" | "gameON";
 
+interface PlayerResponse {
+  playerEmail: string;
+  playerName: string;
+  answer: string;
+  timestamp: string;
+}
+
 const Page = () => {
   const [status, setStatus] = useState<Status>("loading");
   const [gameStatus, setGameStatus] = useState<GameStatus>("gameOFF");
+  const [playerResponses, setPlayerResponses] = useState<Map<string, string>>(new Map());
 
   const params = useParams();
   const roomID = params?.roomID as string;
@@ -62,6 +70,14 @@ const Page = () => {
     setGameStatus("gameON");
   }, []);
 
+  const handlePlayerResponse = useCallback((data: PlayerResponse) => {
+    setPlayerResponses(prev => {
+      const newMap = new Map(prev);
+      newMap.set(data.playerEmail, data.answer);
+      return newMap;
+    });
+  }, []);
+
   useEffect(() => {
     if (!roomID || !playerEmail) return;
 
@@ -75,6 +91,7 @@ const Page = () => {
     socket.on("question", handleQuestion);
     socket.on("joinRoomError", handleJoinRoomError);
     socket.on("gameStarted", handleGameStarted);
+    socket.on("playerResponse", handlePlayerResponse);
 
     socket.emit("joinRoom", { roomID, playerEmail });
 
@@ -84,6 +101,7 @@ const Page = () => {
       socket.off("question", handleQuestion);
       socket.off("joinRoomError", handleJoinRoomError);
       socket.off("gameStarted", handleGameStarted);
+      socket.off("playerResponse", handlePlayerResponse);
     };
   }, [
     roomID,
@@ -92,6 +110,7 @@ const Page = () => {
     handleQuestion,
     handleJoinRoomError,
     handleGameStarted,
+    handlePlayerResponse
   ]);
 
   if (status === "loading") {
@@ -122,9 +141,14 @@ const Page = () => {
                 style={{ backgroundColor: colorMap[playerData.color] }}
               >
                 <CircleUserRound className="w-14 h-14 rounded-3xl transition-transform duration-400 hover:scale-110" />
-                <h1 className="text-2xl font-semibold">
-                  {playerData.username}
-                </h1>
+                <div className="flex flex-col">
+                  <h1 className="text-2xl font-semibold">
+                    {playerData.username}
+                  </h1>
+                  <p className="text-sm opacity-90">
+                    response: {playerResponses.get(playerData.email) || "No response yet"}
+                  </p>
+                </div>
               </div>
             ))}
 
