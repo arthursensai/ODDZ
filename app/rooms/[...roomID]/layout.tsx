@@ -1,18 +1,27 @@
 import { Metadata } from "next";
+import { prisma } from "@/lib/prisma";
 
 type Props = {
-  params: { roomID: string };
-};
+  params: Promise<{ roomID: string }>;
+};  
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const roomID = params.roomID;
+  const resolvedParams = await params;
+  const roomID = resolvedParams.roomID;
+
+  const room = await prisma.game.findUnique({
+    where: { id: roomID },
+    select: { name: true },
+  });
+
+  const roomName = room?.name || `Room ${roomID}`;
 
   return {
-    title: `ODDZ Room ${roomID} – Join the Logic Battle`,
-    description: `Join room ${roomID} in ODDZ – a multiplayer strategy game of logic and chaos.`,
+    title: `ODDZ Room ${roomName} – Join the Logic Battle`,
+    description: `Join room ${roomName} in ODDZ – a multiplayer strategy game of logic and chaos.`,
     openGraph: {
-      title: `ODDZ Room ${roomID}`,
-      description: `Real-time multiplayer gameplay in Room ${roomID}. Invite friends now!`,
+      title: `ODDZ Room ${roomName}`,
+      description: `Real-time multiplayer gameplay in Room ${roomName}. Invite friends now!`,
       url: `https://oddz1-sigma.vercel.app/rooms/${roomID}`,
       images: [
         {
@@ -25,7 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: `ODDZ Room ${roomID}`,
+      title: `ODDZ Room ${roomName}`,
       description: "Challenge your friends in this logic-driven game room.",
       images: ["https://oddz1-sigma.vercel.app/og.png"],
     },
@@ -34,9 +43,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function RoomLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <main className="flex justify-center items-center h-screen">
       {children}
