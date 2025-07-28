@@ -76,7 +76,7 @@ const JoinRoom = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Button className="bg-[#3b82f6] hover:bg-[#00b0e5] text-white px-6 py-4 rounded-xl shadow-md transition-all duration-300 text-xl h-max hover:cursor-pointer">
+          <Button className="bg-gradient-to-l from-[#00bcd4] to-[#0097a7] shadow-secondary-btn hover:bg-[#00b0e5] text-white px-6 py-4 rounded-xl transition-all duration-300 text-xl h-max hover:cursor-pointer">
             Join a room
           </Button>
         </motion.div>

@@ -123,24 +123,54 @@
 }
 
 .game-bg {
-  background: linear-gradient(135deg, #1e1b4b 0%, #7c3aed 50%, #a855f7 100%);
+  background: linear-gradient(135deg, #0f1419 0%, #1a2332 50%, #2a3441 100%);
   min-height: 100vh;
   min-height: 100dvh;
   width: 100%;
+}
+
+.header-bg {
+  background-color: rgba(26, 35, 50, 0.8);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 188, 212, 0.15);
+}
+
+.player-bg {
+  background: rgba(245, 245, 240, 0.1);
+  border: 1px solid rgba(0, 188, 212, 0.3);
+}
+
+@utility text-logo {
+  @apply text-[#00bcd4] font-black text-shadow-logo text-5xl px-2 py-4 tracking-[3px]; 
+}
+
+@utility settings {
+  @apply rounded-3xl px-2 py-4 text-[#f5f5f0];
+}
+
+@theme {
+  --shadow-main-btn: 0 6px 20px rgba(0, 188, 212, 0.3);
+  --shadow-secondary-btn: 0 4px 20px rgba(245, 245, 240, 0.2);
+
+  --shadow-imposter: 0 0 25px rgba(0, 188, 212, 0.6);
+
+  --text-subtitle: rgba(245, 245, 240, 0.8);
+  --text-shadow-logo: 0 0 15px rgba(0, 188, 212, 0.4);
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  
+
   body {
     @apply text-white;
     margin: 0;
     padding: 0;
   }
-  
-  html, body {
+
+  html,
+  body {
     height: 100%;
     margin: 0;
     padding: 0;

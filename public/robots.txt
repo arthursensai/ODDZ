@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://oddz1-sigma.vercel.app/sitemap.xml

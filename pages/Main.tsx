@@ -62,9 +62,9 @@ const Main = ({ player }: MainProps) => {
               transition={{ duration: 0.8 }}
               className="text-center lg:text-left space-y-4"
             >
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight drop-shadow-lg text-white">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold leading-tight drop-shadow-lg text-[#f5f5f0]">
                 Ready to find the{" "}
-                <span className="text-[#84cc16] drop-shadow-md">imposter</span>?
+                <span className="text-[#00bcd4] imposter-shadow">imposter</span>?
               </h1>
             </motion.div>
 
@@ -73,7 +73,7 @@ const Main = ({ player }: MainProps) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
-              className="text-xl sm:text-2xl lg:text-3xl text-white/80 text-center lg:text-left leading-relaxed"
+              className="text-xl sm:text-2xl lg:text-3xl text-subtitle text-center lg:text-left leading-relaxed"
             >
               A game of logic, trust, and deception.
             </motion.p>

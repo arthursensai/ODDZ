@@ -15,6 +15,7 @@ import NotFound from "@/app/not-found";
 import LeaveButton from "@/components/LeaveBtn";
 import StartGame from "@/components/StartGame";
 import { Button } from "@/components/ui/button";
+import { usePathname, useSearchParams } from "next/navigation";
 
 type Status = "loading" | "notfound" | "found";
 type GameStatus = "gameOFF" | "gameON";
@@ -53,6 +54,11 @@ const Page = () => {
   const gamePlayers = useGameStore((state) => state.players);
   const isAdmin = usePlayerStore((state) => state.isAdmin);
   const setAdmin = usePlayerStore((state) => state.setAdmin);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const fullURL =
+    pathname + (searchParams?.toString() ? `?${searchParams?.toString()}` : "");
 
   useEffect(() => {
     if (!roomID) {
@@ -63,7 +69,6 @@ const Page = () => {
   const handleGameData = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (data: any) => {
-      console.log(data);
       setStatus("found");
       setGame(data.roomID, data.name, data.players, data.status);
       setAdmin(data.isAdmin);
@@ -154,8 +159,8 @@ const Page = () => {
   }
 
   const getPlayerStatusColor = (hasResponse: boolean) => {
-    return hasResponse 
-      ? "border-green-400 shadow-green-200" 
+    return hasResponse
+      ? "border-green-400 shadow-green-200"
       : "border-yellow-400 shadow-yellow-200";
   };
 
@@ -163,7 +168,9 @@ const Page = () => {
     const playersNeeded = 4 - gamePlayers.length;
     if (gameStatus === "gameON") return "Game in Progress";
     if (playersNeeded === 0) return "Ready to Start!";
-    return `Waiting for ${playersNeeded} more player${playersNeeded !== 1 ? "s" : ""}`;
+    return `Waiting for ${playersNeeded} more player${
+      playersNeeded !== 1 ? "s" : ""
+    }`;
   };
 
   return (
@@ -173,7 +180,9 @@ const Page = () => {
         <div className="lg:hidden flex items-center justify-between p-4 bg-white/10 backdrop-blur-sm border-b border-white/20">
           <div className="flex items-center gap-3">
             <Users className="w-6 h-6 text-white" />
-            <h1 className="text-xl font-bold text-white truncate">{roomName}</h1>
+            <h1 className="text-xl font-bold text-white truncate">
+              {roomName}
+            </h1>
           </div>
           <div className="flex items-center gap-2">
             {isAdmin && <StartGame />}
@@ -181,7 +190,11 @@ const Page = () => {
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="p-2 rounded-lg bg-white/20 text-white hover:bg-white/30 transition-colors"
             >
-              {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isSidebarOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
           </div>
         </div>
@@ -202,7 +215,7 @@ const Page = () => {
                   </p>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-4">
                 {showQuestion && (
                   <div className="bg-blue-500/20 backdrop-blur-sm border border-blue-400/30 rounded-xl p-4 max-w-md">
@@ -223,11 +236,15 @@ const Page = () => {
                     const hasResponse = playerResponses.has(playerData.email);
                     return (
                       <div
-                        className={`relative overflow-hidden rounded-2xl border-4 ${getPlayerStatusColor(hasResponse)} shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl`}
+                        className={`relative overflow-hidden rounded-2xl border-4 ${getPlayerStatusColor(
+                          hasResponse
+                        )} shadow-xl transition-all duration-300 hover:scale-105 hover:shadow-2xl`}
                         key={playerData.email || i}
-                        style={{ 
+                        style={{
                           backgroundColor: colorMap[playerData.color],
-                          boxShadow: `0 10px 40px ${colorMap[playerData.color]}40`
+                          boxShadow: `0 10px 40px ${
+                            colorMap[playerData.color]
+                          }40`,
                         }}
                       >
                         {/* Player content */}
@@ -241,7 +258,7 @@ const Page = () => {
                               <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse" />
                             )}
                           </div>
-                          
+
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               <h2 className="text-lg lg:text-xl font-bold text-white truncate">
@@ -253,18 +270,21 @@ const Page = () => {
                                 </span>
                               )}
                             </div>
-                            
+
                             <div className="flex items-center gap-2">
                               <Clock className="w-3 h-3 text-white/70" />
                               <p className="text-sm text-white/90 truncate">
-                                {hasResponse ? "Answered ✓" : "Waiting for response..."}
+                                {hasResponse
+                                  ? "Answered ✓"
+                                  : "Waiting for response..."}
                               </p>
                             </div>
-                            
+
                             {/* Response preview (hidden on mobile for space) */}
                             {hasResponse && (
                               <p className="hidden lg:block text-xs text-white/70 mt-1 truncate">
-                                &quot;{playerResponses.get(playerData.email)}&quot;
+                                &quot;{playerResponses.get(playerData.email)}
+                                &quot;
                               </p>
                             )}
                           </div>
@@ -277,47 +297,55 @@ const Page = () => {
                   })}
 
                   {/* Empty slots */}
-                  {Array.from({ length: 4 - gamePlayers.length }).map((_, i) => (
-                    <div
-                      key={`empty-${i}`}
-                      className="bg-white/10 backdrop-blur-sm border-4 border-dashed border-white/30 rounded-2xl p-4 lg:p-6 flex items-center justify-center transition-all duration-300 hover:bg-white/15"
-                    >
-                      <div className="text-center">
-                        <div className="relative mb-3">
-                          <CircleUserRound className="w-12 h-12 lg:w-16 lg:h-16 mx-auto text-white/50" />
-                          <div className="absolute inset-0 animate-ping">
-                            <CircleUserRound className="w-12 h-12 lg:w-16 lg:h-16 mx-auto text-white/20" />
+                  {Array.from({ length: 4 - gamePlayers.length }).map(
+                    (_, i) => (
+                      <div
+                        key={`empty-${i}`}
+                        className="bg-white/10 backdrop-blur-sm border-4 border-dashed border-white/30 rounded-2xl p-4 lg:p-6 flex items-center justify-center transition-all duration-300 hover:bg-white/15"
+                      >
+                        <div className="text-center">
+                          <div className="relative mb-3">
+                            <CircleUserRound className="w-12 h-12 lg:w-16 lg:h-16 mx-auto text-white/50" />
+                            <div className="absolute inset-0 animate-ping">
+                              <CircleUserRound className="w-12 h-12 lg:w-16 lg:h-16 mx-auto text-white/20" />
+                            </div>
+                          </div>
+
+                          <p className="text-white/70 font-medium mb-1">
+                            Waiting for player
+                          </p>
+
+                          <div className="flex justify-center gap-1">
+                            {[0, 200, 400].map((delay, i) => (
+                              <span
+                                key={i}
+                                className="w-1 h-1 bg-white/50 rounded-full animate-pulse"
+                                style={{ animationDelay: `${delay}ms` }}
+                              />
+                            ))}
                           </div>
                         </div>
-                        
-                        <p className="text-white/70 font-medium mb-1">
-                          Waiting for player
-                        </p>
-                        
-                        <div className="flex justify-center gap-1">
-                          {[0, 200, 400].map((delay, i) => (
-                            <span
-                              key={i}
-                              className="w-1 h-1 bg-white/50 rounded-full animate-pulse"
-                              style={{ animationDelay: `${delay}ms` }}
-                            />
-                          ))}
-                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  )}
                 </div>
               </div>
             </div>
           </main>
 
           {/* Sidebar - Responsive */}
-          <aside className={`
+          <aside
+            className={`
             fixed lg:relative top-0 right-0 h-full w-80 lg:w-96 
             bg-white/95 backdrop-blur-md border-l border-white/20 
             transform transition-transform duration-300 ease-in-out z-50
-            ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
-          `}>
+            ${
+              isSidebarOpen
+                ? "translate-x-0"
+                : "translate-x-full lg:translate-x-0"
+            }
+          `}
+          >
             {/* Sidebar content */}
             <div className="flex flex-col h-full p-6">
               {/* Header */}
@@ -333,8 +361,8 @@ const Page = () => {
                     <X className="w-5 h-5 text-slate-600" />
                   </Button>
                 </div>
-                
-                <div className="bg-slate-100 rounded-xl p-4 mb-4">
+
+                <div className="bg-slate-100 rounded-xl p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-600 font-medium">Room ID:</span>
                     <div className="flex items-center gap-2">
@@ -345,6 +373,17 @@ const Page = () => {
                     </div>
                   </div>
                 </div>
+
+                <div className="bg-slate-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-600 font-medium">
+                      Share with ur friends:{" "}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <CopyButton text={fullURL} />
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* Stats */}
@@ -352,23 +391,34 @@ const Page = () => {
                 <div className="bg-blue-50 rounded-xl p-4">
                   <div className="flex items-center gap-3 mb-2">
                     <Users className="w-5 h-5 text-blue-600" />
-                    <span className="font-semibold text-slate-800">Players</span>
+                    <span className="font-semibold text-slate-800">
+                      Players
+                    </span>
                   </div>
                   <p className="text-2xl font-bold text-blue-600">
-                    {gamePlayers.length}<span className="text-slate-400">/4</span>
+                    {gamePlayers.length}
+                    <span className="text-slate-400">/4</span>
                   </p>
                 </div>
 
                 <div className="bg-slate-50 rounded-xl p-4">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-3 h-3 rounded-full ${
-                      gameStatus === "gameON" ? "bg-green-500 animate-pulse" : "bg-yellow-500"
-                    }`} />
+                    <div
+                      className={`w-3 h-3 rounded-full ${
+                        gameStatus === "gameON"
+                          ? "bg-green-500 animate-pulse"
+                          : "bg-yellow-500"
+                      }`}
+                    />
                     <span className="font-semibold text-slate-800">Status</span>
                   </div>
-                  <p className={`font-medium ${
-                    gameStatus === "gameON" ? "text-green-600" : "text-yellow-600"
-                  }`}>
+                  <p
+                    className={`font-medium ${
+                      gameStatus === "gameON"
+                        ? "text-green-600"
+                        : "text-yellow-600"
+                    }`}
+                  >
                     {getGameStatusText()}
                   </p>
                 </div>
@@ -381,17 +431,16 @@ const Page = () => {
                   Game Info
                 </h3>
                 <p className="text-sm text-slate-600 leading-relaxed">
-                  {gameStatus === "gameON" 
+                  {gameStatus === "gameON"
                     ? "The game is now in progress. Follow the instructions and submit your responses!"
-                    : "Waiting for all players to join. The game will start when 4 players are present and the host starts the game."
-                  }
+                    : "Waiting for all players to join. The game will start when 4 players are present and the host starts the game."}
                 </p>
               </div>
 
               {/* Actions */}
               <div className="mt-auto space-y-3">
                 <LeaveButton />
-                
+
                 {/* Quick stats */}
                 <div className="text-xs text-slate-500 text-center py-2">
                   Room created • {gamePlayers.length} active players
@@ -402,7 +451,7 @@ const Page = () => {
 
           {/* Mobile sidebar overlay */}
           {isSidebarOpen && (
-            <div 
+            <div
               className="fixed inset-0 bg-black/50 z-40 lg:hidden"
               onClick={() => setIsSidebarOpen(false)}
             />
