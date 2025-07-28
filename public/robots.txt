@@ -1,4 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
+# Host
+Host: https://oddz1-sigma.vercel.app
+
+# Sitemaps
 Sitemap: https://oddz1-sigma.vercel.app/sitemap.xml

@@ -55,11 +55,6 @@ export const metadata: Metadata = {
   category: "Game",
 };
 
-module.exports = {
-  siteUrl: 'https://oddz1-sigma.vercel.app',
-  generateRobotsTxt: true,
-};
-
 export default function RootLayout({
   children,
 }: Readonly<{
