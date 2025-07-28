@@ -7,8 +7,10 @@ interface PlayerState {
   username: string;
   color: Color | "";
   isAdmin: boolean,
+  musicOn: boolean,
   setPlayer: (email: string, username: string, color: Color) => void;
   setAdmin: (isAdmin: boolean) => void;
+  setMusicON: (musicOn: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerState>()(
@@ -18,8 +20,10 @@ export const usePlayerStore = create<PlayerState>()(
       username: "",
       color: "",
       isAdmin: false,
+      musicOn: false,
       setPlayer: (email, username, color) => set({ email, username, color}),
-      setAdmin: (isAdmin) => set({ isAdmin })
+      setAdmin: (isAdmin) => set({ isAdmin }),
+      setMusicON: (musicOn) => set({ musicOn })
     }),
     {
       name: "player-storage",

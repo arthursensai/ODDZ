@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter} antialiased`}
+        className={`${inter} antialiased game-bg`}
       >
         {children}
       </body>

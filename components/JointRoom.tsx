@@ -82,7 +82,15 @@ const JoinRoom = () => {
         </motion.div>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px] text-black">
+      <DialogContent
+        className="sm:max-w-[425px] text-black"
+        onEscapeKeyDown={(e) =>
+          status === "loading" ? e.preventDefault() : ""
+        }
+        onInteractOutside={(e) =>
+          status === "loading" ? e.preventDefault() : ""
+        }
+      >
         <form onSubmit={handleSubmit(handleJoining)}>
           <DialogHeader>
             <DialogTitle>Join Room</DialogTitle>
@@ -92,18 +100,18 @@ const JoinRoom = () => {
           </DialogDescription>
           <div className="grid gap-3">
             <Label htmlFor="roomId">Room ID:</Label>
-            <Input
-              id="roomId"
-              placeholder="12ks79"
-              {...register("roomId")}
-            />
+            <Input id="roomId" placeholder="12ks79" {...register("roomId")} />
           </div>
           {errors.roomId && (
             <p className="text-red-500 text-sm mt-1">{errors.roomId.message}</p>
           )}
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button variant="outline" className="hover:cursor-pointer">
+              <Button
+                variant="outline"
+                className="hover:cursor-pointer"
+                disabled={status === "loading"}
+              >
                 Cancel
               </Button>
             </DialogClose>

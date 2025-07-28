@@ -1,13 +1,19 @@
-import { useMusicStore } from "@/store/useMusicStore";
 import { Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePlayerStore } from "@/store/usePlayerStore";
 
 const PlayMusicButton = () => {
-  const { isPlaying, setIsPlaying } = useMusicStore();
+  const musicOn = usePlayerStore((state) => state.musicOn);
+  const setMusicON = usePlayerStore((state) => state.setMusicON);
 
   return (
-    <Button onClick={() => setIsPlaying(!isPlaying)} variant="outline">
-      {isPlaying ? (
+    <Button
+      onClick={() => {
+        setMusicON(!musicOn);
+      }}
+      variant="outline"
+    >
+      {musicOn ? (
         <>
           <Volume2 className="mr-2" /> Turn Off
         </>

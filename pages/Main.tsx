@@ -36,12 +36,15 @@ const Main = ({ player }: MainProps) => {
   if (status === "notfound") return <div>Error</div>;
 
   return (
-    <section className="min-h-screen w-full relative bg-black/35">
+    // REMOVED: h-screen - this was constraining the height
+    // CHANGED: Use min-h-screen to allow natural expansion
+    <section className="min-h-screen w-full flex flex-col relative">
       <BackgroundMusic />
       <Header />
       
       {/* Main content container */}
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-80px)]">
+      {/* CHANGED: Use min-h-0 to prevent flex issues and py-8 for breathing room */}
+      <div className="flex flex-col lg:flex-row flex-1 min-h-0 py-8">
         {/* Animation section - smaller on desktop */}
         <div className="lg:w-2/5 flex items-center justify-center p-4 lg:p-6">
           <div className="w-full max-w-[300px] sm:max-w-[350px] lg:max-w-[400px]">
@@ -80,7 +83,7 @@ const Main = ({ player }: MainProps) => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-6 pt-6 justify-center lg:justify-start"
+              className="flex flex-col sm:flex-row gap-6 pt-6 justify-center items-center lg:justify-start"
             >
               <CreateRoom />
               <JoinRoom />

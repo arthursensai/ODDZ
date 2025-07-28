@@ -1,11 +1,11 @@
 "use client";
 
+import { usePlayerStore } from "@/store/usePlayerStore";
 import { useEffect, useRef } from "react";
-import { useMusicStore } from "@/store/useMusicStore";
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const { isPlaying } = useMusicStore();
+  const musicOn = usePlayerStore((state) => state.musicOn);
 
   useEffect(() => {
     if (!audioRef.current) {
@@ -13,7 +13,7 @@ const BackgroundMusic = () => {
       audioRef.current.loop = true;
     }
 
-    if (isPlaying) {
+    if (musicOn) {
       audioRef.current.play().catch(() => {});
     } else {
       audioRef.current.pause();
@@ -22,7 +22,7 @@ const BackgroundMusic = () => {
     return () => {
       audioRef.current?.pause();
     };
-  }, [isPlaying]);
+  }, [musicOn]);
 
   return null;
 };

@@ -10,8 +10,8 @@ import { useGameStore } from "@/store/useRoomStore";
 import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { FormEvent, useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import axios from "axios";
 import { usePlayerStore } from "@/store/usePlayerStore";
+import { getSocket } from "@/lib/socket";
 
 const GameDialog = ({ gameStatus }: { gameStatus: string }) => {
   const [open, setOpen] = useState(false);
@@ -21,7 +21,6 @@ const GameDialog = ({ gameStatus }: { gameStatus: string }) => {
 
   const question = useGameStore((state) => state.question);
   const playerEmail = usePlayerStore((state) => state.email);
-  const gameId = useGameStore((state) => state.roomID);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -31,18 +30,50 @@ const GameDialog = ({ gameStatus }: { gameStatus: string }) => {
     setError("");
 
     try {
-      await axios.post("/api/room/collect-answers", {
-        email: playerEmail,
-        gameId,
-        playerResponse: answer,
+      const socket = getSocket();
+      
+      socket.emit("playerResponse", {
+        answer: answer.trim()
       });
-      setOpen(false);
+
+      const handleSuccess = () => {
+        setOpen(false);
+        setAnswer("");
+        setLoading(false);
+        socket.off("playerResponseError", handleError);
+        socket.off("playerResponse", handleSuccess);
+      };
+
+      const handleError = (errorData: { message: string }) => {
+        setError(errorData.message || "An error happened, try again.");
+        setLoading(false);
+        socket.off("playerResponseError", handleError);
+        socket.off("playerResponse", handleSuccess);
+      };
+
+      socket.once("playerResponseError", handleError);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const originalPlayerResponseHandler = (data: any) => {
+        if (data.playerEmail === playerEmail) {
+          handleSuccess();
+        }
+      };
+      
+      socket.once("playerResponse", originalPlayerResponseHandler);
+
+      setTimeout(() => {
+        socket.off("playerResponseError", handleError);
+        socket.off("playerResponse", originalPlayerResponseHandler);
+        if (loading) {
+          setError("Request timed out, please try again.");
+          setLoading(false);
+        }
+      }, 10000);
+
     } catch (err) {
       console.error("Error submitting answer:", err);
       setError("An error happened, try again.");
-    } finally {
       setLoading(false);
-      setAnswer("");
     }
   };
 

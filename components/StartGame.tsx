@@ -15,13 +15,13 @@ const StartGame = () => {
     socket.emit("startGame", { roomID, playerEmail });
 
     socket.on("startGameError", (err) => {
-        console.log(err)
+        console.log(err);
     })
   };
 
   return (
     <form onSubmit={handleStartGame}>
-      <Button type="submit">Start the game</Button>
+      <Button type="submit" className="bg-green-700 hover:cursor-pointer hover:bg-green-600">Start the game</Button>
     </form>
   );
 };

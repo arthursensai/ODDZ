@@ -9,9 +9,14 @@ const Home = async () => {
 
   if (!session?.user?.email) {
     return (
-      <section className="min-h-screen flex flex-col text-center text-white">
-         <LandingAnimation />
-      </section>
+      <div className="game-bg min-h-screen">
+        <div className="flex flex-col items-center justify-center text-center relative min-h-screen px-4">
+          <div className="absolute inset-0 bg-black/5"></div>
+          <div className="relative z-10 w-full max-w-md">
+            <LandingAnimation />
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -19,19 +24,30 @@ const Home = async () => {
 
   if (!player) {
     return (
-      <section className="flex flex-col items-center justify-center w-full min-h-screen text-white">
-        <p className="text-xl font-semibold">❌ Player not found.</p>
-        <div className="bg-white p-2 rounded-2xl">
-          <SignOut />
+      <div className="game-bg min-h-screen">
+        <div className="flex flex-col items-center justify-center relative min-h-screen px-4">
+          <div className="absolute inset-0 bg-black/5"></div>
+
+          <div className="relative z-10 text-center">
+            <p className="text-xl font-semibold mb-4">❌ Player not found.</p>
+            <div className="bg-white p-2 rounded-2xl inline-block">
+              <SignOut />
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
     );
   }
 
   return (
-    <section className="flex flex-col w-full min-h-screen justify-center items-center">
-      <Main player={player} />
-    </section>
+    <div className="game-bg">
+      <div className="relative">
+        <div className="absolute inset-0 bg-black/5"></div>
+        <div className="relative z-10">
+          <Main player={player} />
+        </div>
+      </div>
+    </div>
   );
 };
 

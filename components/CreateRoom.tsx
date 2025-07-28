@@ -85,7 +85,15 @@ const CreateRoom = () => {
         </motion.div>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-[425px] text-black">
+      <DialogContent
+        className="sm:max-w-[425px] text-black"
+        onEscapeKeyDown={(e) =>
+          status === "loading" ? e.preventDefault() : ""
+        }
+        onInteractOutside={(e) =>
+          status === "loading" ? e.preventDefault() : ""
+        }
+      >
         <form onSubmit={handleSubmit(handleCreating)}>
           <DialogHeader>
             <DialogTitle>Create Room</DialogTitle>
@@ -103,12 +111,16 @@ const CreateRoom = () => {
               placeholder="My Awesome Game Room"
             />
           </div>
-          {errors.name && ( // ✅ Add error display
+          {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
           )}
           <DialogFooter className="mt-4">
             <DialogClose asChild>
-              <Button variant="outline" className="hover:cursor-pointer">
+              <Button
+                variant="outline"
+                className="hover:cursor-pointer"
+                disabled={status === "loading"}
+              >
                 Cancel
               </Button>
             </DialogClose>
