@@ -62,6 +62,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <meta name="google-site-verification" content="d10T36n-gtFjU64uEMYw2e--fqe2KGoe2-jfSNInWtc" />
       <body className={`${inter} antialiased game-bg`}>{children}</body>
     </html>
   );
